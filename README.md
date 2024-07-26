@@ -1,10 +1,10 @@
 ## Steps to run
 ````
-. Install Requirements and setup
+- Install Requirements and setup
 ```
 pip install -r requirements.txt
 ```
-5. Run Application
+- Run Application
 ```
 python app.py
 ```
