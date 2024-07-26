@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sleep Disorder Detection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e3f2fd;
+            background-size: cover;
+            backdrop-filter: blur(10px);
+        }
+        .container {
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 50px auto;
+            max-width: 600px;
+            color: white;
+        }
+        h1 {
+            text-align: center;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Sleep Disorder Detection</h1>
+        <form action="/predict" method="post">
+            <label for="age">Age:</label>
+            <input type="number" id="age" name="age" min="18" max="100" value="27" required>
+
+            <label for="gender">Gender:</label>
+            <select id="gender" name="gender" required>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+            </select>
+
+            <label for="occupation">Occupation:</label>
+            <select id="occupation" name="occupation" required>
+                <option value="Doctor">Doctor</option>
+                <option value="Teacher">Teacher</option>
+                <option value="Nurse">Nurse</option>
+                <option value="Engineer">Engineer</option>
+                <option value="Accountant">Accountant</option>
+                <option value="Lawyer">Lawyer</option>
+                <option value="Salesperson">Salesperson</option>
+                <option value="Others">Others</option>
+            </select>
+
+            <label for="bmi_category">BMI Category:</label>
+            <select id="bmi_category" name="bmi_category" required>
+                <option value="Normal">Normal</option>
+                <option value="Overweight">Overweight</option>
+                <option value="Obese">Obese</option>
+            </select>
+
+            <label for="sleep_duration">Sleep Duration (hours):</label>
+            <input type="number" id="sleep_duration" name="sleep_duration" step="0.1" min="0" max="24" value="4.0" required>
+
+            <label for="quality_of_sleep">Quality of Sleep (0-10):</label>
+            <input type="number" id="quality_of_sleep" name="quality_of_sleep" min="0" max="10" value="5" required>
+
+            <label for="physical_activity_level">Physical Activity Level (0-100):</label>
+            <input type="number" id="physical_activity_level" name="physical_activity_level" min="0" max="100" value="50" required>
+
+            <label for="stress_level">Stress Level (0-10):</label>
+            <input type="number" id="stress_level" name="stress_level" min="0" max="10" value="5" required>
+
+            <label for="heart_rate">Heart Rate (bpm):</label>
+            <input type="number" id="heart_rate" name="heart_rate" value="70" required>
+
+            <label for="daily_steps">Daily Steps:</label>
+            <input type="number" id="daily_steps" name="daily_steps" value="5000" required>
+
+            <label for="systolic">Systolic Blood Pressure (mmHg):</label>
+            <input type="number" id="systolic" name="systolic" value="120" required>
+
+            <label for="diastolic">Diastolic Blood Pressure (mmHg):</label>
+            <input type="number" id="diastolic" name="diastolic" value="80" required>
+
+            <button type="submit">Predict</button>
+        </form>
+
+        {% if prediction %}
+            <div class="result">
+                <h2>Prediction: {{ prediction }}</h2>
+                <p>{{ tips }}</p>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
