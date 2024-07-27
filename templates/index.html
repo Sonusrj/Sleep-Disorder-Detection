@@ -7,7 +7,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #e3f2fd;
+            background-color: #8ccefd;
             background-size: cover;
             backdrop-filter: blur(10px);
         }
@@ -16,27 +16,38 @@
             border-radius: 10px;
             padding: 20px;
             margin: 50px auto;
-            max-width: 600px;
+            max-width: 800px;
             color: white;
         }
         h1 {
             text-align: center;
         }
+        .form-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
         label {
             display: block;
             margin: 10px 0 5px;
+            width: 100%;
         }
         input, select, button {
-            width: 100%;
             padding: 10px;
             margin-bottom: 10px;
             border: none;
             border-radius: 5px;
         }
+        .form-group div {
+            flex: 1;
+            min-width: 48%;
+            box-sizing: border-box;
+        }
         button {
             background-color: #007bff;
             color: white;
             font-size: 16px;
+            width: 100%;
         }
         button:hover {
             background-color: #0056b3;
@@ -50,58 +61,72 @@
     <div class="container">
         <h1>Sleep Disorder Detection</h1>
         <form action="/predict" method="post">
-            <label for="age">Age:</label>
-            <input type="number" id="age" name="age" min="18" max="100" value="27" required>
-
-            <label for="gender">Gender:</label>
-            <select id="gender" name="gender" required>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-            </select>
-
-            <label for="occupation">Occupation:</label>
-            <select id="occupation" name="occupation" required>
-                <option value="Doctor">Doctor</option>
-                <option value="Teacher">Teacher</option>
-                <option value="Nurse">Nurse</option>
-                <option value="Engineer">Engineer</option>
-                <option value="Accountant">Accountant</option>
-                <option value="Lawyer">Lawyer</option>
-                <option value="Salesperson">Salesperson</option>
-                <option value="Others">Others</option>
-            </select>
-
-            <label for="bmi_category">BMI Category:</label>
-            <select id="bmi_category" name="bmi_category" required>
-                <option value="Normal">Normal</option>
-                <option value="Overweight">Overweight</option>
-                <option value="Obese">Obese</option>
-            </select>
-
-            <label for="sleep_duration">Sleep Duration (hours):</label>
-            <input type="number" id="sleep_duration" name="sleep_duration" step="0.1" min="0" max="24" value="4.0" required>
-
-            <label for="quality_of_sleep">Quality of Sleep (0-10):</label>
-            <input type="number" id="quality_of_sleep" name="quality_of_sleep" min="0" max="10" value="5" required>
-
-            <label for="physical_activity_level">Physical Activity Level (0-100):</label>
-            <input type="number" id="physical_activity_level" name="physical_activity_level" min="0" max="100" value="50" required>
-
-            <label for="stress_level">Stress Level (0-10):</label>
-            <input type="number" id="stress_level" name="stress_level" min="0" max="10" value="5" required>
-
-            <label for="heart_rate">Heart Rate (bpm):</label>
-            <input type="number" id="heart_rate" name="heart_rate" value="70" required>
-
-            <label for="daily_steps">Daily Steps:</label>
-            <input type="number" id="daily_steps" name="daily_steps" value="5000" required>
-
-            <label for="systolic">Systolic Blood Pressure (mmHg):</label>
-            <input type="number" id="systolic" name="systolic" value="120" required>
-
-            <label for="diastolic">Diastolic Blood Pressure (mmHg):</label>
-            <input type="number" id="diastolic" name="diastolic" value="80" required>
-
+            <div class="form-group">
+                <div>
+                    <label for="age">Age:</label>
+                    <input type="number" id="age" name="age" min="18" max="100" value="{{ request.form.age }}" required>
+                </div>
+                <div>
+                    <label for="gender">Gender:</label>
+                    <select id="gender" name="gender" required>
+                        <option value="Male" {% if request.form.gender == 'Male' %}selected{% endif %}>Male</option>
+                        <option value="Female" {% if request.form.gender == 'Female' %}selected{% endif %}>Female</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="occupation">Occupation:</label>
+                    <select id="occupation" name="occupation" required>
+                        <option value="Doctor" {% if request.form.occupation == 'Doctor' %}selected{% endif %}>Doctor</option>
+                        <option value="Teacher" {% if request.form.occupation == 'Teacher' %}selected{% endif %}>Teacher</option>
+                        <option value="Nurse" {% if request.form.occupation == 'Nurse' %}selected{% endif %}>Nurse</option>
+                        <option value="Engineer" {% if request.form.occupation == 'Engineer' %}selected{% endif %}>Engineer</option>
+                        <option value="Accountant" {% if request.form.occupation == 'Accountant' %}selected{% endif %}>Accountant</option>
+                        <option value="Lawyer" {% if request.form.occupation == 'Lawyer' %}selected{% endif %}>Lawyer</option>
+                        <option value="Salesperson" {% if request.form.occupation == 'Salesperson' %}selected{% endif %}>Salesperson</option>
+                        <option value="Others" {% if request.form.occupation == 'Others' %}selected{% endif %}>Others</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="bmi_category">BMI Category:</label>
+                    <select id="bmi_category" name="bmi_category" required>
+                        <option value="Normal" {% if request.form.bmi_category == 'Normal' %}selected{% endif %}>Normal</option>
+                        <option value="Overweight" {% if request.form.bmi_category == 'Overweight' %}selected{% endif %}>Overweight</option>
+                        <option value="Obese" {% if request.form.bmi_category == 'Obese' %}selected{% endif %}>Obese</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="sleep_duration">Sleep Duration (hours):</label>
+                    <input type="number" id="sleep_duration" name="sleep_duration" step="0.1" min="0" max="24" value="{{ request.form.sleep_duration }}" required>
+                </div>
+                <div>
+                    <label for="quality_of_sleep">Quality of Sleep (0-10):</label>
+                    <input type="number" id="quality_of_sleep" name="quality_of_sleep" min="0" max="10" value="{{ request.form.quality_of_sleep }}" required>
+                </div>
+                <div>
+                    <label for="physical_activity_level">Physical Activity Level (0-100):</label>
+                    <input type="number" id="physical_activity_level" name="physical_activity_level" min="0" max="100" value="{{ request.form.physical_activity_level }}" required>
+                </div>
+                <div>
+                    <label for="stress_level">Stress Level (0-10):</label>
+                    <input type="number" id="stress_level" name="stress_level" min="0" max="10" value="{{ request.form.stress_level }}" required>
+                </div>
+                <div>
+                    <label for="heart_rate">Heart Rate (bpm):</label>
+                    <input type="number" id="heart_rate" name="heart_rate" value="{{ request.form.heart_rate }}" required>
+                </div>
+                <div>
+                    <label for="daily_steps">Daily Steps:</label>
+                    <input type="number" id="daily_steps" name="daily_steps" value="{{ request.form.daily_steps }}" required>
+                </div>
+                <div>
+                    <label for="systolic">Systolic Blood Pressure (mmHg):</label>
+                    <input type="number" id="systolic" name="systolic" value="{{ request.form.systolic }}" required>
+                </div>
+                <div>
+                    <label for="diastolic">Diastolic Blood Pressure (mmHg):</label>
+                    <input type="number" id="diastolic" name="diastolic" value="{{ request.form.diastolic }}" required>
+                </div>
+            </div>
             <button type="submit">Predict</button>
         </form>
 

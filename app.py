@@ -2,15 +2,19 @@ from flask import Flask, request, render_template
 import pickle
 import numpy as np
 from sklearn.preprocessing import LabelEncoder, MinMaxScaler
+import logging
 
 app = Flask(__name__)
+
+# Configure logging
+logging.basicConfig(level=logging.DEBUG)
 
 # Load the trained model and preprocessing objects
 try:
     with open('model.pkl', 'rb') as model_file:
         model = pickle.load(model_file)
 except Exception as e:
-    print(f"Error loading the model: {e}")
+    logging.error(f"Error loading the model: {e}")
     model = None
 
 # Load LabelEncoders and Scaler if available
@@ -20,7 +24,7 @@ try:
     bmi_encoder = pickle.load(open('BMI_Category_label_encoder.pkl', 'rb'))
     scaler = pickle.load(open('minmax_scaler_split.pkl', 'rb'))
 except Exception as e:
-    print(f"Error loading preprocessing objects: {e}")
+    logging.error(f"Error loading preprocessing objects: {e}")
     gender_encoder = occupation_encoder = bmi_encoder = scaler = None
 
 @app.route('/')
@@ -44,6 +48,8 @@ def predict():
             systolic = int(request.form['systolic'])
             diastolic = int(request.form['diastolic'])
             bmi_category = request.form['bmi_category']
+
+            logging.debug(f"Received input: {request.form}")
 
             # Encode categorical variables
             if gender_encoder:
@@ -70,6 +76,8 @@ def predict():
                 stress_level, heart_rate, daily_steps, systolic, diastolic
             ]
 
+            logging.debug(f"Numerical features before scaling: {numerical_features}")
+
             # Ensure input has the correct number of features
             complete_features = np.zeros((1, 12))
             complete_features[0, :9] = numerical_features  # Assuming the first 9 are numerical features
@@ -79,6 +87,8 @@ def predict():
                 scaled_features = scaler.transform(complete_features).flatten()
             else:
                 scaled_features = complete_features.flatten()
+
+            logging.debug(f"Scaled features: {scaled_features}")
 
             # Combine features
             features = np.array([
@@ -95,6 +105,8 @@ def predict():
                 scaled_features[7],  # systolic_scaled
                 scaled_features[8]   # diastolic_scaled
             ])
+
+            logging.debug(f"Combined features for model prediction: {features}")
 
             # Ensure model is correctly loaded
             if model is None or not hasattr(model, 'predict'):
@@ -116,6 +128,7 @@ def predict():
             
             return render_template('index.html', prediction=prediction_text, tips=tips.get(prediction_text, ''))
         except Exception as e:
+            logging.error(f"Error during prediction: {e}")
             return render_template('index.html', prediction=f'Error: {e}')
 
 if __name__ == '__main__':
