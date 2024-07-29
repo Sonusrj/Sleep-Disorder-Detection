@@ -5,55 +5,120 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sleep Disorder Detection</title>
     <style>
+        :root {
+            --primary-color: #278dfa;
+            --hover-color: #2d84e0;
+            --background-color: #8ccefd;
+            --container-bg-color: rgba(0, 0, 0, 0.8);
+            --input-bg-color: #ffffff;
+            --input-border-color: #ddd;
+            --text-color: #f8f9fa;
+            --heading-font-size: 2.5em;
+            --label-font-size: 1em;
+            --input-font-size: 1em;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: #8ccefd;
+            font-family: 'Arial', sans-serif;
+            background-color: var(--background-color);
             background-size: cover;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(8px);
+            margin: 0;
+            padding: 0;
+            color: var(--text-color);
         }
+
         .container {
-            background: rgba(0, 0, 0, 0.7);
-            border-radius: 10px;
-            padding: 20px;
+            background: var(--container-bg-color);
+            border-radius: 12px;
+            padding: 30px;
             margin: 50px auto;
-            max-width: 800px;
-            color: white;
+            max-width: 900px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
+
         h1 {
             text-align: center;
+            margin-bottom: 30px;
+            font-size: var(--heading-font-size);
+            color: var(--primary-color);
         }
-        .form-group {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
+
+        form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
         }
+
         label {
             display: block;
-            margin: 10px 0 5px;
+            margin-bottom: 8px;
+            font-size: var(--label-font-size);
+            color: var(--text-color);
+        }
+
+        input, select {
             width: 100%;
-        }
-        input, select, button {
-            padding: 10px;
-            margin-bottom: 10px;
-            border: none;
-            border-radius: 5px;
-        }
-        .form-group div {
-            flex: 1;
-            min-width: 48%;
+            padding: 14px;
+            border: 1px solid var(--input-border-color);
+            border-radius: 8px;
+            background-color: var(--input-bg-color);
+            margin-bottom: 15px;
             box-sizing: border-box;
+            font-size: var(--input-font-size);
+            transition: border-color 0.3s ease;
         }
+
+        input:focus, select:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
         button {
-            background-color: #007bff;
+            padding: 15px;
+            background-color: var(--primary-color);
             color: white;
-            font-size: 16px;
-            width: 100%;
+            font-size: 18px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            grid-column: 1 / -1;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 4px 8px rgba(43, 41, 41, 0.2);
         }
+
         button:hover {
-            background-color: #0056b3;
+            background-color: var(--hover-color);
+            transform: scale(1.05);
         }
+
         .result {
             margin-top: 20px;
+            text-align: center;
+            padding: 20px;
+            color: white;
+            border-radius: 8px;
+        }
+
+        .result h2 {
+            margin: 0;
+            font-size: 1.5em;
+        }
+
+        .spacer {
+            grid-column: 1 / -1;
+            height: 20px;
+        }
+
+        @media (max-width: 768px) {
+            form {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -61,71 +126,87 @@
     <div class="container">
         <h1>Sleep Disorder Detection</h1>
         <form action="/predict" method="post">
-            <div class="form-group">
-                <div>
-                    <label for="age">Age:</label>
-                    <input type="number" id="age" name="age" min="18" max="100" value="{{ request.form.age }}" required>
-                </div>
-                <div>
-                    <label for="gender">Gender:</label>
-                    <select id="gender" name="gender" required>
-                        <option value="Male" {% if request.form.gender == 'Male' %}selected{% endif %}>Male</option>
-                        <option value="Female" {% if request.form.gender == 'Female' %}selected{% endif %}>Female</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="occupation">Occupation:</label>
-                    <select id="occupation" name="occupation" required>
-                        <option value="Doctor" {% if request.form.occupation == 'Doctor' %}selected{% endif %}>Doctor</option>
-                        <option value="Teacher" {% if request.form.occupation == 'Teacher' %}selected{% endif %}>Teacher</option>
-                        <option value="Nurse" {% if request.form.occupation == 'Nurse' %}selected{% endif %}>Nurse</option>
-                        <option value="Engineer" {% if request.form.occupation == 'Engineer' %}selected{% endif %}>Engineer</option>
-                        <option value="Accountant" {% if request.form.occupation == 'Accountant' %}selected{% endif %}>Accountant</option>
-                        <option value="Lawyer" {% if request.form.occupation == 'Lawyer' %}selected{% endif %}>Lawyer</option>
-                        <option value="Salesperson" {% if request.form.occupation == 'Salesperson' %}selected{% endif %}>Salesperson</option>
-                        <option value="Others" {% if request.form.occupation == 'Others' %}selected{% endif %}>Others</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="bmi_category">BMI Category:</label>
-                    <select id="bmi_category" name="bmi_category" required>
-                        <option value="Normal" {% if request.form.bmi_category == 'Normal' %}selected{% endif %}>Normal</option>
-                        <option value="Overweight" {% if request.form.bmi_category == 'Overweight' %}selected{% endif %}>Overweight</option>
-                        <option value="Obese" {% if request.form.bmi_category == 'Obese' %}selected{% endif %}>Obese</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="sleep_duration">Sleep Duration (hours):</label>
-                    <input type="number" id="sleep_duration" name="sleep_duration" step="0.1" min="0" max="24" value="{{ request.form.sleep_duration }}" required>
-                </div>
-                <div>
-                    <label for="quality_of_sleep">Quality of Sleep (0-10):</label>
-                    <input type="number" id="quality_of_sleep" name="quality_of_sleep" min="0" max="10" value="{{ request.form.quality_of_sleep }}" required>
-                </div>
-                <div>
-                    <label for="physical_activity_level">Physical Activity Level (0-100):</label>
-                    <input type="number" id="physical_activity_level" name="physical_activity_level" min="0" max="100" value="{{ request.form.physical_activity_level }}" required>
-                </div>
-                <div>
-                    <label for="stress_level">Stress Level (0-10):</label>
-                    <input type="number" id="stress_level" name="stress_level" min="0" max="10" value="{{ request.form.stress_level }}" required>
-                </div>
-                <div>
-                    <label for="heart_rate">Heart Rate (bpm):</label>
-                    <input type="number" id="heart_rate" name="heart_rate" value="{{ request.form.heart_rate }}" required>
-                </div>
-                <div>
-                    <label for="daily_steps">Daily Steps:</label>
-                    <input type="number" id="daily_steps" name="daily_steps" value="{{ request.form.daily_steps }}" required>
-                </div>
-                <div>
-                    <label for="systolic">Systolic Blood Pressure (mmHg):</label>
-                    <input type="number" id="systolic" name="systolic" value="{{ request.form.systolic }}" required>
-                </div>
-                <div>
-                    <label for="diastolic">Diastolic Blood Pressure (mmHg):</label>
-                    <input type="number" id="diastolic" name="diastolic" value="{{ request.form.diastolic }}" required>
-                </div>
+            <div>
+                <label for="age">Age:</label>
+                <input type="number" id="age" name="age" min="18" max="100" value="{{ request.form.age }}" placeholder="Enter your age" required>
+            </div>
+            <div>
+                <label for="gender">Gender:</label>
+                <select id="gender" name="gender" required>
+                    <option value="" disabled selected>Select your gender</option>
+                    <option value="Male" {% if request.form.gender == 'Male' %}selected{% endif %}>Male</option>
+                    <option value="Female" {% if request.form.gender == 'Female' %}selected{% endif %}>Female</option>
+                </select>
+            </div>
+
+            <div class="spacer"></div>
+
+            <div>
+                <label for="occupation">Occupation:</label>
+                <select id="occupation" name="occupation" required>
+                    <option value="" disabled selected>Select your occupation</option>
+                    <option value="Doctor" {% if request.form.occupation == 'Doctor' %}selected{% endif %}>Doctor</option>
+                    <option value="Teacher" {% if request.form.occupation == 'Teacher' %}selected{% endif %}>Teacher</option>
+                    <option value="Nurse" {% if request.form.occupation == 'Nurse' %}selected{% endif %}>Nurse</option>
+                    <option value="Engineer" {% if request.form.occupation == 'Engineer' %}selected{% endif %}>Engineer</option>
+                    <option value="Accountant" {% if request.form.occupation == 'Accountant' %}selected{% endif %}>Accountant</option>
+                    <option value="Lawyer" {% if request.form.occupation == 'Lawyer' %}selected{% endif %}>Lawyer</option>
+                    <option value="Salesperson" {% if request.form.occupation == 'Salesperson' %}selected{% endif %}>Salesperson</option>
+                    <option value="Others" {% if request.form.occupation == 'Others' %}selected{% endif %}>Others</option>
+                </select>
+            </div>
+            <div>
+                <label for="bmi_category">BMI Category:</label>
+                <select id="bmi_category" name="bmi_category" required>
+                    <option value="" disabled selected>Select your BMI category</option>
+                    <option value="Normal" {% if request.form.bmi_category == 'Normal' %}selected{% endif %}>Normal</option>
+                    <option value="Overweight" {% if request.form.bmi_category == 'Overweight' %}selected{% endif %}>Overweight</option>
+                    <option value="Obese" {% if request.form.bmi_category == 'Obese' %}selected{% endif %}>Obese</option>
+                </select>
+            </div>
+
+            <div class="spacer"></div>
+
+            <div>
+                <label for="sleep_duration">Sleep Duration (hours):</label>
+                <input type="number" id="sleep_duration" name="sleep_duration" step="0.1" min="0" max="24" value="{{ request.form.sleep_duration }}" placeholder="Enter sleep duration" required>
+            </div>
+            <div>
+                <label for="quality_of_sleep">Quality of Sleep (0-10):</label>
+                <input type="number" id="quality_of_sleep" name="quality_of_sleep" min="0" max="10" value="{{ request.form.quality_of_sleep }}" placeholder="Rate your sleep quality" required>
+            </div>
+
+            <div class="spacer"></div>
+
+            <div>
+                <label for="physical_activity_level">Physical Activity Level (0-100):</label>
+                <input type="number" id="physical_activity_level" name="physical_activity_level" min="0" max="100" value="{{ request.form.physical_activity_level }}" placeholder="Enter physical activity level" required>
+            </div>
+            <div>
+                <label for="stress_level">Stress Level (0-10):</label>
+                <input type="number" id="stress_level" name="stress_level" min="0" max="10" value="{{ request.form.stress_level }}" placeholder="Rate your stress level" required>
+            </div>
+
+            <div class="spacer"></div>
+
+            <div>
+                <label for="heart_rate">Heart Rate (bpm):</label>
+                <input type="number" id="heart_rate" name="heart_rate" value="{{ request.form.heart_rate }}" placeholder="Enter heart rate" required>
+            </div>
+            <div>
+                <label for="daily_steps">Daily Steps:</label>
+                <input type="number" id="daily_steps" name="daily_steps" value="{{ request.form.daily_steps }}" placeholder="Enter daily steps count" required>
+            </div>
+
+            <div class="spacer"></div>
+
+            <div>
+                <label for="systolic">Systolic Blood Pressure (mmHg):</label>
+                <input type="number" id="systolic" name="systolic" value="{{ request.form.systolic }}" placeholder="Enter systolic BP" required>
+            </div>
+            <div>
+                <label for="diastolic">Diastolic Blood Pressure (mmHg):</label>
+                <input type="number" id="diastolic" name="diastolic" value="{{ request.form.diastolic }}" placeholder="Enter diastolic BP" required>
             </div>
             <button type="submit">Predict</button>
         </form>
