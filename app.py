@@ -3,15 +3,16 @@ import pickle
 import numpy as np
 from sklearn.preprocessing import LabelEncoder, MinMaxScaler
 import logging
+import os
 
 app = Flask(__name__)
 
 # Configure logging
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(filename='logs/app.log', level=logging.DEBUG)
 
 # Load the trained model and preprocessing objects
 try:
-    with open('model.pkl', 'rb') as model_file:
+    with open(os.path.join('models', 'model.pkl'), 'rb') as model_file:
         model = pickle.load(model_file)
 except Exception as e:
     logging.error(f"Error loading the model: {e}")
@@ -19,10 +20,10 @@ except Exception as e:
 
 # Load LabelEncoders and Scaler if available
 try:
-    gender_encoder = pickle.load(open('Gender_label_encoder.pkl', 'rb'))
-    occupation_encoder = pickle.load(open('Occupation_label_encoder.pkl', 'rb'))
-    bmi_encoder = pickle.load(open('BMI_Category_label_encoder.pkl', 'rb'))
-    scaler = pickle.load(open('minmax_scaler_split.pkl', 'rb'))
+    gender_encoder = pickle.load(open(os.path.join('models', 'Gender_label_encoder.pkl'), 'rb'))
+    occupation_encoder = pickle.load(open(os.path.join('models', 'Occupation_label_encoder.pkl'), 'rb'))
+    bmi_encoder = pickle.load(open(os.path.join('models', 'BMI_Category_label_encoder.pkl'), 'rb'))
+    scaler = pickle.load(open(os.path.join('models', 'minmax_scaler_split.pkl'), 'rb'))
 except Exception as e:
     logging.error(f"Error loading preprocessing objects: {e}")
     gender_encoder = occupation_encoder = bmi_encoder = scaler = None
@@ -132,4 +133,4 @@ def predict():
             return render_template('index.html', prediction=f'Error: {e}')
 
 if __name__ == '__main__':
-    app.run("0.0.0.0")
+    app.run(debug=True)
